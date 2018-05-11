@@ -1,0 +1,5 @@
+cidr_block              = "10.0.0.0/16"
+cidr_newbits            = "6"
+name_tag                = "myvpc"
+private_subnet_nametags = [ "app", "db", "mgmt" ]
+public_subnet_nametags  = [ "bastion", "elb" ]

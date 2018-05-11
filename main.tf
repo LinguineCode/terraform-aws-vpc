@@ -19,7 +19,7 @@ resource "aws_subnet" "private" {
   cidr_block        = "${cidrsubnet("${aws_vpc.main.cidr_block}", "${var.cidr_newbits}", length(aws_subnet.public.*.id) + count.index)}"
 
   tags {
-    Name = "${element(var.private_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
+    Name = "${trimspace(var.name_tag)} ${element(var.private_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
   }
 }
 
@@ -32,7 +32,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags {
-    Name = "${element(var.public_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
+    Name = "${trimspace(var.name_tag)} ${element(var.public_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
   }
 }
 
@@ -47,6 +47,11 @@ resource "aws_nat_gateway" "main" {
 
   allocation_id = "${element(aws_eip.main.*.id, count.index)}"
   subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
+
+  tags {
+    Name = "${trimspace(var.name_tag)}"
+  }
+
 }
 
 resource "aws_route_table" "private" {
@@ -54,7 +59,7 @@ resource "aws_route_table" "private" {
   vpc_id = "${aws_vpc.main.id}"
 
   tags {
-    Name = "${var.name_tag} private"
+    Name = "${trimspace(var.name_tag)} ${var.name_tag} private"
   }
 }
 
@@ -62,7 +67,7 @@ resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
 
   tags {
-    Name = "${var.name_tag} public"
+    Name = "${trimspace(var.name_tag)} ${var.name_tag} public"
   }
 }
 

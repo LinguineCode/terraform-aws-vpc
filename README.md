@@ -4,8 +4,8 @@ A terraform module that takes a simple approach to setting up a VPC and all rela
 
 ## Features
 
-  1. Automatically discover availability zones
-  1. Automatically calculate CIDR ranges. The only input needed is the VPC network ID and how big you want the subnets to be.
-  1. Create two NAT Gateways for multi-AZ
-  1. Unlimited amount of public subnets and private subnets
-  1. Optionally launch an SSH bastion instance
+  1. Creates VPC, NAT gateways, routing tables, routes. Unlimited private and public subnets based on your input.
+  1. Automatically discover availability zones.
+  1. Automatically calculate CIDR ranges based on quantity of availability zones, and the size you want the subnets to be.
+  1. Create two NAT Gateways and assign them to subnets on an odd/even basis for multi-AZ
+  1. Resists the temptation to allow for snowflake customization features like VPC Peering, VPN routing, DHCP Options, etc. Keep it simple, when possible.

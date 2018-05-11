@@ -9,7 +9,7 @@ variable "cidr_newbits"   {
 }
 
 variable "name_tag_prefix" {
-  description = "Resources tags will be prefixed with this string"
+  description = "Resource's name tags will be prefixed with this string"
   default = ""
 }
 

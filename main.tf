@@ -19,7 +19,9 @@ resource "aws_subnet" "private" {
   cidr_block        = "${cidrsubnet("${aws_vpc.main.cidr_block}", "${var.cidr_newbits}", length(aws_subnet.public.*.id) + count.index)}"
 
   tags {
-    Name = "${trimspace(var.name_tag_prefix)} ${element(var.private_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
+    Name        = "${trimspace(var.name_tag_prefix)} ${element(var.private_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
+    Description = "${element(var.private_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
+    Type        = "private"
   }
 }
 
@@ -32,7 +34,9 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags {
-    Name = "${trimspace(var.name_tag_prefix)} ${element(var.public_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
+    Name        = "${trimspace(var.name_tag_prefix)} ${element(var.public_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
+    Description = "${element(var.public_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
+    Type        = "public"
   }
 }
 
@@ -60,6 +64,7 @@ resource "aws_route_table" "private" {
 
   tags {
     Name = "${trimspace(var.name_tag_prefix)} private"
+    Type = "private"
   }
 }
 
@@ -68,6 +73,7 @@ resource "aws_route_table" "public" {
 
   tags {
     Name = "${trimspace(var.name_tag_prefix)} public"
+    Type = "public"
   }
 }
 

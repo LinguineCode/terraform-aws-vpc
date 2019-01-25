@@ -10,6 +10,30 @@ A terraform module that takes a simple approach to setting up a VPC with all the
   1. Create two NAT Gateways and assign them to subnets on an odd/even basis for multi-AZ.
   1. Resists the temptation to allow for snowflake customization features like VPC Peering, VPN routing, DHCP Options, etc. Keep it simple, when possible.
 
+## Usage
+
+##### Launch an EC2 instance into a single subnet
+
+```terraform
+resource "aws_instance" "web" {
+  ami                    = "${data.aws_ami.ubuntu.id}"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = ["${module.vpc.default_security_group"]
+  subnet_id              = "${element(module.vpc.private_subnet_ids["private"],0)}"
+}
+```
+
+##### Launch an ELB into multiple subnets
+```terraform
+resource "aws_lb" "test" {
+  name               = "test-lb-tf"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = ["${module.vpc.default_security_group"]
+  subnets            = ["${module.vpc.public_subnet_ids["public"]}"]
+}
+```
+
 ## Outputs
 
 Supported module outputs are:
@@ -18,17 +42,12 @@ Supported module outputs are:
   1. `public_subnet_ids` (map)
   1. `vpc_id` (string)
 
-Example of using subnet ID map, assuming you called it via the name `module "vpc" {}`:
-```terraform
-resource "aws_autoscaling_group" "main" {
-  name                = "foobar3-terraform-test"
-
-  ...omitted...
-  vpc_zone_identifier = [ "${module.vpc.private_subnet_ids["app"]}" ]
-}
+Example console output with these custom variables defined:
+```
+private_subnet_nametags = ["app1", "app2", "db"]
+public_subnet_nametags = ["lb", "bastion"]
 ```
 
-Example console output:
 ```
 default_security_group_id = sg-286b0e60
 private_subnet_ids = {

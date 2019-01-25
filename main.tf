@@ -55,7 +55,6 @@ resource "aws_nat_gateway" "main" {
   tags {
     Name = "${trimspace(var.name_tag_prefix)}"
   }
-
 }
 
 resource "aws_route_table" "private" {
@@ -103,25 +102,4 @@ resource "aws_route_table_association" "public" {
 
   subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
   route_table_id = "${aws_route_table.public.id}"
-}
-
-resource "aws_default_security_group" "default" {
-# Yes this is created automatically by the aws_vpc resource, however,
-# we have to declare it within terraform to be able to use it as an output
-# for other terraform activities
-  vpc_id = "${aws_vpc.main.id}"
-
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }

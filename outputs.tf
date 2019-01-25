@@ -3,13 +3,13 @@ output "vpc_id" {
 }
 
 output "default_security_group_id" {
-  value = "${aws_default_security_group.default.id}"
+  value = "${data.aws_security_group.default.id}"
 }
 
 locals {
-  empty_list            = ["","","","","","","","","",""]
+  empty_list = ["", "", "", "", "", "", "", "", "", ""]
 
-  private_subnet_padded = "${concat(var.private_subnet_nametags,local.empty_list)}"
+  private_subnet_padded    = "${concat(var.private_subnet_nametags,local.empty_list)}"
   private_subnet_ids_type0 = "${coalescelist(matchkeys(aws_subnet.private.*.id, aws_subnet.private.*.tags.Description,list("${element(local.private_subnet_padded,0)}")),list(""))}"
   private_subnet_ids_type1 = "${coalescelist(matchkeys(aws_subnet.private.*.id, aws_subnet.private.*.tags.Description,list("${element(local.private_subnet_padded,1)}")),list(""))}"
   private_subnet_ids_type2 = "${coalescelist(matchkeys(aws_subnet.private.*.id, aws_subnet.private.*.tags.Description,list("${element(local.private_subnet_padded,2)}")),list(""))}"
@@ -21,7 +21,7 @@ locals {
   private_subnet_ids_type8 = "${coalescelist(matchkeys(aws_subnet.private.*.id, aws_subnet.private.*.tags.Description,list("${element(local.private_subnet_padded,8)}")),list(""))}"
   private_subnet_ids_type9 = "${coalescelist(matchkeys(aws_subnet.private.*.id, aws_subnet.private.*.tags.Description,list("${element(local.private_subnet_padded,9)}")),list(""))}"
 
-  public_subnet_padded = "${concat(var.public_subnet_nametags,local.empty_list)}"
+  public_subnet_padded    = "${concat(var.public_subnet_nametags,local.empty_list)}"
   public_subnet_ids_type0 = "${coalescelist(matchkeys(aws_subnet.public.*.id, aws_subnet.public.*.tags.Description,list("${element(local.public_subnet_padded,0)}")),list(""))}"
   public_subnet_ids_type1 = "${coalescelist(matchkeys(aws_subnet.public.*.id, aws_subnet.public.*.tags.Description,list("${element(local.public_subnet_padded,1)}")),list(""))}"
   public_subnet_ids_type2 = "${coalescelist(matchkeys(aws_subnet.public.*.id, aws_subnet.public.*.tags.Description,list("${element(local.public_subnet_padded,2)}")),list(""))}"
@@ -32,7 +32,6 @@ locals {
   public_subnet_ids_type7 = "${coalescelist(matchkeys(aws_subnet.public.*.id, aws_subnet.public.*.tags.Description,list("${element(local.public_subnet_padded,7)}")),list(""))}"
   public_subnet_ids_type8 = "${coalescelist(matchkeys(aws_subnet.public.*.id, aws_subnet.public.*.tags.Description,list("${element(local.public_subnet_padded,8)}")),list(""))}"
   public_subnet_ids_type9 = "${coalescelist(matchkeys(aws_subnet.public.*.id, aws_subnet.public.*.tags.Description,list("${element(local.public_subnet_padded,9)}")),list(""))}"
-
 }
 
 output "private_subnet_ids" {

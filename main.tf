@@ -2,7 +2,7 @@ resource "aws_vpc" "main" {
   cidr_block           = "${var.cidr_block}"
   enable_dns_hostnames = true
 
-  tags {
+  tags = {
     Name = "${trimspace(var.name_tag_prefix)}"
   }
 }
@@ -18,7 +18,7 @@ resource "aws_subnet" "private" {
   availability_zone = "${element(concat(data.aws_availability_zones.available.names,data.aws_availability_zones.available.names,data.aws_availability_zones.available.names,data.aws_availability_zones.available.names,data.aws_availability_zones.available.names,data.aws_availability_zones.available.names,data.aws_availability_zones.available.names,data.aws_availability_zones.available.names,data.aws_availability_zones.available.names,data.aws_availability_zones.available.names), count.index)}"
   cidr_block        = "${cidrsubnet("${aws_vpc.main.cidr_block}", "${var.cidr_newbits}", length(aws_subnet.public.*.id) + count.index)}"
 
-  tags {
+  tags = {
     Name        = "${trimspace(var.name_tag_prefix)} ${element(var.private_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
     Description = "${element(var.private_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
     Type        = "private"
@@ -33,7 +33,7 @@ resource "aws_subnet" "public" {
   cidr_block              = "${cidrsubnet("${aws_vpc.main.cidr_block}", "${var.cidr_newbits}", "${count.index}")}"
   map_public_ip_on_launch = true
 
-  tags {
+  tags = {
     Name        = "${trimspace(var.name_tag_prefix)} ${element(var.public_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
     Description = "${element(var.public_subnet_nametags, ceil(count.index / length(data.aws_availability_zones.available.names)))}"
     Type        = "public"
@@ -52,7 +52,7 @@ resource "aws_nat_gateway" "main" {
   allocation_id = "${element(aws_eip.main.*.id, count.index)}"
   subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
 
-  tags {
+  tags = {
     Name = "${trimspace(var.name_tag_prefix)}"
   }
 }
@@ -61,7 +61,7 @@ resource "aws_route_table" "private" {
   count  = "${length(data.aws_availability_zones.available.names)}"
   vpc_id = "${aws_vpc.main.id}"
 
-  tags {
+  tags = {
     Name = "${trimspace(var.name_tag_prefix)} private"
     Type = "private"
   }
@@ -70,7 +70,7 @@ resource "aws_route_table" "private" {
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
 
-  tags {
+  tags = {
     Name = "${trimspace(var.name_tag_prefix)} public"
     Type = "public"
   }
